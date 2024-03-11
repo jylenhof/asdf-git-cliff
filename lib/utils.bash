@@ -32,13 +32,36 @@ list_all_versions() {
 	list_github_tags
 }
 
+get_arch() {
+	uname -m
+}
+
+get_os() {
+	local getos
+	getos="$(uname -s)"
+	case "${getos}" in
+	"Linux")
+		echo "unknown-linux-gnu"
+		;;
+	"Darwin")
+		echo "apple-darwin"
+		;;
+	*)
+		exit 1
+		;;
+	esac
+}
+
+
 download_release() {
 	local version filename url
 	version="$1"
 	filename="$2"
 
-	# TODO: Adapt the release URL convention for git-cliff
-	url="$GH_REPO/releases/download/v${version}/git-cliff-${version}-${arch}-{os}.tar.gz"
+	arch="$(get_arch)"
+	os="$(get_os)"
+
+	url="$GH_REPO/releases/download/v${version}/git-cliff-${version}-${arch}-${os}.tar.gz"
 
 	echo "* Downloading $TOOL_NAME release $version..."
 	curl "${curl_opts[@]}" -o "$filename" -C - "$url" || fail "Could not download $url"
