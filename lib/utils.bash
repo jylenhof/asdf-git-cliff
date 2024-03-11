@@ -52,7 +52,6 @@ get_os() {
 	esac
 }
 
-
 download_release() {
 	local version filename url
 	version="$1"
